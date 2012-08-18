@@ -35,18 +35,22 @@
     self.userNamesCompletionBlock = completion;
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
 	ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    __weak JGTwitterManager *weakSelf = self;
 	[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
         if(granted) {
-            __block NSMutableArray *usernames = [NSMutableArray array];
+            NSMutableArray *usernames = [NSMutableArray array];
 			[[accountStore accountsWithAccountType:accountType] enumerateObjectsUsingBlock:^(ACAccount *account, NSUInteger idx, BOOL *stop) {
                 [usernames addObject:account.username];
             }];
-            self.accountUsernames = usernames;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                weakSelf.accountUsernames = usernames;
+            });
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.userNamesCompletionBlock(self.accountUsernames);
-            self.userNamesCompletionBlock = nil;
+            weakSelf.userNamesCompletionBlock(weakSelf.accountUsernames);
+            weakSelf.userNamesCompletionBlock = nil;
         });
         
 	}];
