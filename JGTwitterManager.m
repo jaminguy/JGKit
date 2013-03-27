@@ -36,7 +36,7 @@
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
 	ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
     __weak JGTwitterManager *weakSelf = self;
-	[accountStore requestAccessToAccountsWithType:accountType withCompletionHandler:^(BOOL granted, NSError *error) {
+    [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
         if(granted) {
             NSMutableArray *usernames = [NSMutableArray array];
 			[[accountStore accountsWithAccountType:accountType] enumerateObjectsUsingBlock:^(ACAccount *account, NSUInteger idx, BOOL *stop) {
