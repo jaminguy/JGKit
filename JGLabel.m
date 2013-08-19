@@ -48,8 +48,9 @@
     CGMutablePathRef path = CGPathCreateMutable();
     
     CGRect boundsRect = self.bounds;
-    CGFloat lineHeight = [self.text sizeWithFont:self.font].height;
-    CGFloat y = (boundsRect.size.height - lineHeight) / 2.0;
+    CGSize textSize = [self.text boundingRectWithSize:CGSizeMake(boundsRect.size.width, boundsRect.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{ NSFontAttributeName : self.font } context:NULL].size;
+    CGFloat lineHeight = ceilf(textSize.height);
+    CGFloat y = floorf((boundsRect.size.height - lineHeight) / 2.0);
     CGRect rect = CGRectMake(boundsRect.origin.x, boundsRect.origin.y + y, boundsRect.size.width, lineHeight);
     CGPathAddRect(path, NULL, rect);
     [paths addObject:(__bridge_transfer id)path];
