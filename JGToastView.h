@@ -12,6 +12,6 @@
 
 @interface JGToastView : JGView
 
-+ (void)toastInView:(UIView *)parentView withText:(NSString *)text completion:(void (^)())completion;
++ (void)toastInView:(UIView *)parentView withText:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor font:(UIFont *)font completion:(void (^)())completion;
 
 @end
