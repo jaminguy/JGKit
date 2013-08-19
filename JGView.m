@@ -25,6 +25,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         super.backgroundColor = [UIColor clearColor];
+        [self updateMask];
     }
     return self;
 }
@@ -33,6 +34,7 @@
     self = [super initWithCoder:aDecoder];
     if(self) {
         super.backgroundColor = [UIColor clearColor];
+        [self updateMask];
     }
     return self;
 }
@@ -44,7 +46,7 @@
     [super drawRect:rect];
     CGRect outerRect = rect;
     UIBezierPath  *path;
-     CGFloat radius = self.cornerRadius;
+    CGFloat radius = self.cornerRadius;
     if(self.borderWidth > 0) {
         if(radius > 0) {
             path = [UIBezierPath bezierPathWithRoundedRect:outerRect byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(radius, radius)];
@@ -76,15 +78,35 @@
         [(self.backgroundColor ?: [UIColor whiteColor]) setFill];
         UIRectFill(outerRect);
     }
+    
+    [self updateMask];
+}
+
+- (void)updateMask {
+    CAShapeLayer *mask = [CAShapeLayer layer];
+    mask.frame = self.bounds;
+    CGFloat radius = self.cornerRadius;
+    CGFloat offset = self.borderWidth;
+    mask.path = [UIBezierPath bezierPathWithRoundedRect:mask.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(radius, radius)].CGPath;
+    mask.fillColor = (self.backgroundColor ?: [UIColor whiteColor]).CGColor;
+    self.layer.mask = mask;
 }
 
 - (void)setBackgroundColor:(UIColor *)newColor {
     backgroundColor = newColor;
+    [self updateMask];
     [self setNeedsDisplay];
 }
 
 - (void)setCornerRadius:(CGFloat)aCornerRadius {
     cornerRadius = aCornerRadius;
+    [self updateMask];
+    [self setNeedsDisplay];
+}
+
+- (void)setBorderWidth:(CGFloat)newBorderWidth {
+    borderWidth = newBorderWidth;
+    [self updateMask];
     [self setNeedsDisplay];
 }
 
