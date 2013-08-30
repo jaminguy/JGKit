@@ -86,7 +86,6 @@
     CAShapeLayer *mask = [CAShapeLayer layer];
     mask.frame = self.bounds;
     CGFloat radius = self.cornerRadius;
-    CGFloat offset = self.borderWidth;
     mask.path = [UIBezierPath bezierPathWithRoundedRect:mask.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(radius, radius)].CGPath;
     mask.fillColor = (self.backgroundColor ?: [UIColor whiteColor]).CGColor;
     self.layer.mask = mask;
