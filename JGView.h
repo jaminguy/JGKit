@@ -14,6 +14,7 @@
 @property (nonatomic) CGFloat borderWidth;
 @property (nonatomic, strong) UIColor *borderColor;
 @property (nonatomic, strong) UIColor *backgroundColor;
+@property (assign, nonatomic) BOOL maskToBounds;
 
 - (CGRect)fillRect;
 - (UIBezierPath *)fillClipPath;

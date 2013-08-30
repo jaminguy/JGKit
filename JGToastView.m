@@ -23,12 +23,8 @@ static NSMutableArray *toasts;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, weak) UIView *parentView;
 @property (nonatomic, strong) NSTimer *fadeOutTimer;
-
-- (id)initWithText:(NSString *)someText;
-- (void)fadeOut;
-- (void)configurePath;
-- (void)configureText;
-- (void)startFadeOutTimer;
+@property (strong, nonatomic) UIColor *textColor;
+@property (strong, nonatomic) UIFont *font;
 
 @end
 
@@ -43,20 +39,15 @@ static NSMutableArray *toasts;
 #define kSideBuffer 4.0
 #define kTextLabelWidth 220.0
 
-@synthesize textLabel;
-@synthesize text;
-@synthesize parentView;
-@synthesize fadeOutTimer;
-
-+ (void)toastInView:(UIView *)aParentView withText:(NSString *)text completion:(void (^)())completion {
-	JGToastView *toastView = [[JGToastView alloc] initWithText:text];
++ (void)toastInView:(UIView *)parentView withText:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor font:(UIFont *)font completion:(void (^)())completion {
+	JGToastView *toastView = [[JGToastView alloc] initWithText:text textColor:textColor backgroundColor:backgroundColor font:font];
     toastView.toastCompletionBlock = completion;
-    toastView.parentView = aParentView;
+    toastView.parentView = parentView;
     
 	CGFloat labelWidth = toastView.textLabel.frame.size.width;
 	CGFloat labelHeight = toastView.textLabel.frame.size.height;
-	CGFloat parentWidth = aParentView.frame.size.width;
-	CGFloat parentHeight = aParentView.frame.size.height;
+	CGFloat parentWidth = parentView.frame.size.width;
+	CGFloat parentHeight = parentView.frame.size.height;
 	
 	toastView.frame = CGRectMake((parentWidth - labelWidth) / 2.0, (parentHeight - labelHeight) / 2.0, labelWidth + (kSideBuffer * 2.0), labelHeight + (kSideBuffer * 2.0));
     
@@ -97,29 +88,29 @@ static NSMutableArray *toasts;
 }
 
 
-- (id)initWithText:(NSString *)someText {
+- (id)initWithText:(NSString *)text textColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor font:(UIFont *)font {
 	if ((self = [self initWithFrame:CGRectZero])) {
         
         self.alpha = 0.0;
         self.cornerRadius = 6.0;
-        self.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:.8];
-        self.borderWidth = 1.0;
-        self.borderColor = [UIColor blackColor];
+        self.backgroundColor = backgroundColor ? [backgroundColor colorWithAlphaComponent:0.9] : [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.9];
         self.autoresizingMask = UIViewAutoresizingNone;
         self.autoresizesSubviews = NO;
-        self.layer.shadowOpacity = 1.0;
-        self.layer.shadowOffset = CGSizeMake(1.0, 1.0);
         
-        self.text = someText;
-		
-        UIFont *font = [UIFont boldSystemFontOfSize:kFontSize];
-        CGSize textSize = [text sizeWithFont:(UIFont *)font constrainedToSize:CGSizeMake(kTextLabelWidth, CGFLOAT_MAX)];
-		textLabel = [[JGTextView alloc] init];
+        _font = font ?: [UIFont boldSystemFontOfSize:kFontSize];
+        _textColor = textColor ?: [UIColor whiteColor];
+        
+        _text = [text copy];
+        
+        NSDictionary *textAttributes = @{NSFontAttributeName: self.font};
+        CGRect textRect = [text boundingRectWithSize:CGSizeMake(kTextLabelWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes context:NULL];
+        CGSize textSize = textRect.size;
+		_textLabel = [[JGTextView alloc] init];
         CGRect textLabelFrame = CGRectMake(kSideBuffer, kSideBuffer, textSize.width + (kSideBuffer * 2.0), textSize.height + (kSideBuffer * 2.0));
-        textLabel.frame = textLabelFrame;
-		textLabel.backgroundColor = [UIColor clearColor];
+        _textLabel.frame = textLabelFrame;
+		_textLabel.backgroundColor = [UIColor clearColor];
 		
-		[self addSubview:textLabel];
+		[self addSubview:_textLabel];
 	}
 	
 	return self;
@@ -152,11 +143,11 @@ static NSMutableArray *toasts;
         CTParagraphStyleRef paragraphStyle = CTParagraphStyleCreate(paragraphSettings, sizeof(paragraphSettings));
         [stringAttributes setObject:(__bridge_transfer id)paragraphStyle forKey:(NSString *)kCTParagraphStyleAttributeName];
         
-        UIFont *uiFont = [UIFont boldSystemFontOfSize:kFontSize];
+        UIFont *uiFont = self.font;
         CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)uiFont.fontName, kFontSize, NULL);
         [stringAttributes setObject:(__bridge_transfer id)font forKey:(id)kCTFontAttributeName];
         
-        CGColorRef textColor = CGColorCreateCopy([[UIColor whiteColor] CGColor]);
+        CGColorRef textColor = CGColorCreateCopy([self.textColor CGColor]);
         [stringAttributes setObject:(__bridge_transfer id)textColor forKey:(id)kCTForegroundColorAttributeName];
         
         self.textLabel.attributedString = [[NSAttributedString alloc] initWithString:self.text attributes:stringAttributes];

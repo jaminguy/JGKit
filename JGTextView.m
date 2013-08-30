@@ -45,7 +45,7 @@ CGRect clipRectToPath(CGRect rect, CGPathRef path) {
 	size_t width = floorf(rect.size.width);
 	size_t height = floorf(rect.size.height);
 	uint8_t *bits = calloc(width * height, sizeof(*bits));
-	CGContextRef bitmapContext = CGBitmapContextCreate(bits, width, height, sizeof(*bits) * 8, width, NULL, kCGImageAlphaOnly);
+	CGContextRef bitmapContext = CGBitmapContextCreate(bits, width, height, sizeof(*bits) * 8, width, NULL, (CGBitmapInfo)kCGImageAlphaOnly);
 	CGContextSetShouldAntialias(bitmapContext, NO);
 	
 	CGContextTranslateCTM(bitmapContext, -rect.origin.x, -rect.origin.y);

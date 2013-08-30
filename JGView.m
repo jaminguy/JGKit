@@ -83,12 +83,14 @@
 }
 
 - (void)updateMask {
-    CAShapeLayer *mask = [CAShapeLayer layer];
-    mask.frame = self.bounds;
-    CGFloat radius = self.cornerRadius;
-    mask.path = [UIBezierPath bezierPathWithRoundedRect:mask.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(radius, radius)].CGPath;
-    mask.fillColor = (self.backgroundColor ?: [UIColor whiteColor]).CGColor;
-    self.layer.mask = mask;
+    if(self.maskToBounds) {
+        CAShapeLayer *mask = [CAShapeLayer layer];
+        mask.frame = self.bounds;
+        CGFloat radius = self.cornerRadius;
+        mask.path = [UIBezierPath bezierPathWithRoundedRect:mask.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(radius, radius)].CGPath;
+        mask.fillColor = (self.backgroundColor ?: [UIColor whiteColor]).CGColor;
+        self.layer.mask = mask;
+    }
 }
 
 - (void)setBackgroundColor:(UIColor *)newColor {
