@@ -93,7 +93,7 @@ static NSMutableArray *toasts;
         
         self.alpha = 0.0;
         self.cornerRadius = 6.0;
-        self.backgroundColor = backgroundColor ? [backgroundColor colorWithAlphaComponent:0.9] : [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.9];
+        self.backgroundColor = backgroundColor ? [backgroundColor colorWithAlphaComponent:0.98] : [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.98];
         self.autoresizingMask = UIViewAutoresizingNone;
         self.autoresizesSubviews = NO;
         
@@ -103,10 +103,14 @@ static NSMutableArray *toasts;
         _text = [text copy];
         
         NSDictionary *textAttributes = @{NSFontAttributeName: self.font};
+#ifdef __IPHONE_7_0
         CGRect textRect = [text boundingRectWithSize:CGSizeMake(kTextLabelWidth, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes context:NULL];
         CGSize textSize = textRect.size;
+#else
+        CGSize textSize = [text sizeWithFont:_font constrainedToSize:CGSizeMake(kTextLabelWidth, CGFLOAT_MAX)];
+#endif
 		_textLabel = [[JGTextView alloc] init];
-        CGRect textLabelFrame = CGRectMake(kSideBuffer, kSideBuffer, textSize.width + (kSideBuffer * 2.0), textSize.height + (kSideBuffer * 2.0));
+        CGRect textLabelFrame = CGRectMake(kSideBuffer, kSideBuffer * 2.0, textSize.width + kSideBuffer, textSize.height);
         _textLabel.frame = textLabelFrame;
 		_textLabel.backgroundColor = [UIColor clearColor];
 		

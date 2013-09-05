@@ -48,7 +48,12 @@
     CGMutablePathRef path = CGPathCreateMutable();
     
     CGRect boundsRect = self.bounds;
+#ifdef __IPHONE_7_0
     CGSize textSize = [self.text boundingRectWithSize:CGSizeMake(boundsRect.size.width, boundsRect.size.height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{ NSFontAttributeName : self.font } context:NULL].size;
+#else
+    CGSize textSize = [self.text sizeWithFont:self.font constrainedToSize:CGSizeMake(boundsRect.size.width, boundsRect.size.height)];
+#endif
+    
     CGFloat lineHeight = ceilf(textSize.height);
     CGFloat y = floorf((boundsRect.size.height - lineHeight) / 2.0);
     CGRect rect = CGRectMake(boundsRect.origin.x, boundsRect.origin.y + y, boundsRect.size.width, lineHeight);
