@@ -137,7 +137,7 @@ static NSMutableArray *toasts;
 
 - (void)configureText {
     if(self.text) {
-        CTTextAlignment kAlignment = kCTLeftTextAlignment;
+        CTTextAlignment kAlignment = kCTTextAlignmentLeft;
         CGFloat lineSpacing = 1.0;
         CTParagraphStyleSetting paragraphSettings[] = {
             { kCTParagraphStyleSpecifierAlignment, sizeof(kAlignment), &kAlignment},

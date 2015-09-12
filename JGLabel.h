@@ -13,6 +13,6 @@
 @property (nonatomic, strong) UIFont *font;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, strong) UIColor *textColor;
-@property (nonatomic) UITextAlignment textAlignment;
+@property (nonatomic) NSTextAlignment textAlignment;
 
 @end

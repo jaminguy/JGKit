@@ -65,12 +65,12 @@
 
 - (void)configureText {
     if(self.text.length) {
-        CTTextAlignment kAlignment = kCTLeftTextAlignment;
+        CTTextAlignment kAlignment = kCTTextAlignmentLeft;
         if(self.textAlignment == NSTextAlignmentCenter) {
-            kAlignment = kCTCenterTextAlignment;
+            kAlignment = kCTTextAlignmentCenter;
         }
         else if(self.textAlignment == NSTextAlignmentRight) {
-            kAlignment = kCTRightTextAlignment;
+            kAlignment = kCTTextAlignmentRight;
         }
         CTParagraphStyleSetting paragraphSettings[] = {
             { kCTParagraphStyleSpecifierAlignment, sizeof(kAlignment), &kAlignment}
